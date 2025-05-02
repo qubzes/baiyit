@@ -1,0 +1,175 @@
+@import "tailwindcss";
+@plugin 'tailwindcss-animate';
+
+@layer base {
+  :root {
+    --background: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --card: hsl(0 0% 100%); /* #FFFFFF White */
+    --card-foreground: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --popover: hsl(0 0% 100%); /* #FFFFFF White */
+    --popover-foreground: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --primary: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --primary-foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --secondary: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --secondary-foreground: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --muted: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --muted-foreground: hsl(216 62% 20% / 0.7); /* Navy Blue with opacity */
+    --accent: hsl(206 50% 58%); /* #5798CA Sky Blue */
+    --accent-foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --border: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --input: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --ring: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --radius: 0.5rem;
+    --primary-navy: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --accent-sky: hsl(206 50% 58%); /* #5798CA Sky Blue */
+    --background-light: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --text-dark: hsl(216 62% 20%); /* #081F44 Navy Blue */
+  }
+
+  .dark {
+    --background: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --card: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --card-foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --popover: hsl(216 62% 20%); /* #081F44 Navy Blue */
+    --popover-foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --primary: hsl(206 50% 58%); /* #5798CA Sky Blue */
+    --primary-foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --secondary: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --secondary-foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --muted: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --muted-foreground: hsl(0 0% 100% / 0.7); /* White with opacity */
+    --accent: hsl(206 50% 58%); /* #5798CA Sky Blue */
+    --accent-foreground: hsl(0 0% 100%); /* #FFFFFF White */
+    --border: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --input: hsl(30 7% 94%); /* #F0EEEB Grey */
+    --ring: hsl(206 50% 58%); /* #5798CA Sky Blue */
+  }
+
+  @keyframes accordion-down {
+    from { height: 0 }
+    to { height: var(--radix-accordion-content-height) }
+  }
+
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height) }
+    to { height: 0 }
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-text-dark;
+  }
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-navy: var(--primary-navy);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-sky: var(--accent-sky);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-background-light: var(--background-light);
+  --color-text-dark: var(--text-dark);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-2xl: 1rem;
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  --container-padding: 2rem;
+  --container-max-width-2xl: 1400px;
+}
+
+@layer components {
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-md rounded-2xl shadow-lg border border-border;
+  }
+
+  .button-primary {
+    @apply bg-primary-navy text-white rounded-xl px-6 py-3 font-medium hover:bg-primary-navy/90 transition-all;
+  }
+
+  .button-accent {
+    @apply bg-accent-sky text-white rounded-xl px-6 py-3 font-medium hover:bg-accent-sky/90 transition-all;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-light);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-navy);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-navy/90);
+}
+
+/* Glass morphism effects */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Hide scrollbar for cleaner UI on certain elements */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
