@@ -21,7 +21,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useProducts } from "@/hooks/use-products"
 import { useBag } from "@/hooks/use-bag"
 import { useAIAssistant } from "@/hooks/use-ai-assistant"
-import { useMobile } from "@/hooks/use-mobile"
 import Link from "next/link"
 
 export default function ProductPage() {
@@ -32,7 +31,6 @@ export default function ProductPage() {
   const { updateContextInfo, openAssistant } = useAIAssistant()
   const [quantity, setQuantity] = useState(1)
   const [isWishlisted, setIsWishlisted] = useState(false)
-  const isMobile = useMobile()
 
   // Find the product with the matching ID
   const product = products.find((p) => p.id === productId)

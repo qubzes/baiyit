@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="max-w-md text-center md:text-left">
             <h3 className="text-xl font-bold mb-3">Baiyit</h3>
             <p className="text-white/80">
-              The world's first AI-first shopping concierge that finds, compares, and purchases exactly what you need.
+              The world&apos;s first AI-first shopping concierge that finds, compares, and purchases exactly what you need.
             </p>
           </div>
 

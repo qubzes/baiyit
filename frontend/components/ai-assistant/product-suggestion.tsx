@@ -21,7 +21,6 @@ export function ProductSuggestion({ onSelect, messageIndex }: ProductSuggestionP
     if (messages.length === 0) return
 
     // Get the current message and previous messages
-    const currentMessage = messages[messageIndex]
     const recentMessages = messages
       .slice(Math.max(0, messageIndex - 3), messageIndex + 1)
       .map((m) => m.text.toLowerCase())

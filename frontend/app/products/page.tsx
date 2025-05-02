@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useAIAssistant } from "@/hooks/use-ai-assistant"
 import { useMobile } from "@/hooks/use-mobile"
+import Image from "next/image"
 
 export default function ProductsPage() {
   const searchParams = useSearchParams()
@@ -187,7 +188,7 @@ export default function ProductsPage() {
                   className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/20 p-4 flex"
                 >
                   <div className="w-24 h-24 md:w-40 md:h-40 relative flex-shrink-0">
-                    <img
+                    <Image
                       src={product.image || "/placeholder.svg"}
                       alt={product.title}
                       className="object-cover rounded-lg w-full h-full"

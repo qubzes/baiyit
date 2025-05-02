@@ -11,7 +11,7 @@ import { User, CreditCard, Bell, Shield, Upload, LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default function ProfilePage() {
-  const [avatar, setAvatar] = useState("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780")
+  const [avatar] = useState("https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1780")
 
   // Mock user data
   const user = {
