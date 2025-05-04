@@ -1,0 +1,74 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica Neue, Helvetica, Arial, sans-serif" color="#081F44" />
+      <mj-text font-size="16px" line-height="1.6" />
+    </mj-attributes>
+    <mj-style inline="inline">
+      .otp-container {
+        background: #f1f0ef;
+        padding: 16px 24px;
+        border-radius: 12px;
+        display: inline-block;
+        font-size: 28px;
+        letter-spacing: 12px;
+        font-weight: bold;
+        color: #081F44;
+        font-family: monospace;
+      }
+
+      .subtle {
+        color: #888888;
+        font-size: 13px;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#f1f0ef">
+    <mj-section padding="40px 0">
+      <mj-column background-color="#ffffff" padding="40px" border-radius="12px">
+        <mj-image width="180px" padding-bottom="24px" src="https://baiyit.vercel.app/enter-otp.png" alt="Login OTP" />
+
+        <mj-text align="center" font-size="24px" font-weight="bold" color="#081F44" padding-bottom="10px">
+          Welcome Back to Baiyit 👋
+        </mj-text>
+
+        <mj-text align="center" color="#5798CA" font-size="16px" padding-bottom="20px">
+          Here's your one-time sign in code.
+        </mj-text>
+
+        <mj-divider border-color="#dfe2e8" padding="10px 0" />
+
+        <mj-text align="center" padding="10px 0">
+          Hi {{first_name}},<br /><br />
+          Use the code below to securely sign in to your Baiyit account:
+        </mj-text>
+
+        <mj-text align="center" padding="10px 0">
+          <span class="otp-container">{{otp}}</span>
+        </mj-text>
+
+        <mj-text align="center" padding="20px 0">
+          Enter this code on Baiyit and you're good to go.
+        </mj-text>
+
+        <mj-divider border-color="#dfe2e8" padding="20px 0" />
+
+        <mj-text align="center" css-class="subtle" padding-bottom="8px">
+          This code is valid for the next 15 minutes.
+        </mj-text>
+
+        <mj-text align="center" css-class="subtle" padding-bottom="20px">
+          Didn’t try to log in? You can safely ignore this email.
+        </mj-text>
+
+        <mj-text align="center" font-size="12px" color="#888888">
+          Need help? <a href="mailto:support@baiyit.com" style="color:#5798CA">Contact our support</a>
+        </mj-text>
+
+        <mj-text align="center" font-size="12px" color="#888888" padding-top="10px">
+          &copy; 2025 Baiyit. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

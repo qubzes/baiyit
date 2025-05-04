@@ -1,0 +1,23 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+
+# dotenv
+.env
+.env.*
+!.env.example
+
+# Virtual environments
+.venv
+
+# Log files
+*.log
+
+# Backup and temporary files
+*.bak
+*.tmp
+*.swp
+
+# Alembic migrations
+alembic/versions
