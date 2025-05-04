@@ -32,7 +32,7 @@ class User(BaseModel):
     role: Mapped[UserRole] = mapped_column(
         SQLEnum(UserRole), nullable=False, default=UserRole.customer
     )
-    is_suspended: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_suspended: Mapped[bool] = mapped_column(Boolean, default=False)
     otp: Mapped[Optional[str]] = mapped_column(String(6), nullable=True)
     otp_expires_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True

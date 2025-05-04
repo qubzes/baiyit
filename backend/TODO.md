@@ -1,0 +1,2 @@
+- addd attributes for user so that a user will only have access to only profile
+- 

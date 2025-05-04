@@ -10,8 +10,6 @@ class AuthSession(BaseModel):
 
     access_token: Mapped[str] = mapped_column(String(500), nullable=False)
     refresh_token: Mapped[str] = mapped_column(String(500), nullable=False)
-    user_id: Mapped[str] = mapped_column(
-        ForeignKey("users.id"), nullable=False
-    )
+    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False)
 
     user = relationship(User, backref="sessions")

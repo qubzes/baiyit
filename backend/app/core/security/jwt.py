@@ -38,7 +38,8 @@ async def verify_token(
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])  # type: ignore
         if payload["token_type"] != token_type:
             raise HTTPException(
-                status_code=401, detail=f"Invalid token type. Expected {token_type} token."
+                status_code=401,
+                detail=f"Invalid token type. Expected {token_type} token.",
             )
 
         user_id = payload["user_id"]
@@ -54,21 +55,32 @@ async def verify_token(
 
         if not auth_session:
             raise HTTPException(
-                status_code=401, detail="Authentication session not found. Please sign in again."
+                status_code=401,
+                detail="Authentication session not found. Please sign in again.",
             )
 
         user = await User.get(db, id=user_id)
         if not user:
-            raise HTTPException(status_code=401, detail="User account not found. Please contact support.")
+            raise HTTPException(
+                status_code=401,
+                detail="User account not found. Please contact support.",
+            )
 
         if user.is_suspended:
-            raise HTTPException(status_code=401, detail="Your account has been suspended. Please contact our support team at support@baiyit.com for assistance.")
+            raise HTTPException(
+                status_code=401,
+                detail="Your account has been suspended. Please contact our support team at support@baiyit.com for assistance.",
+            )
 
         return user
     except jwt.ExpiredSignatureError:
-        raise HTTPException(status_code=401, detail="Your session has expired. Please log in again.")
+        raise HTTPException(
+            status_code=401, detail="Your session has expired. Please log in again."
+        )
     except jwt.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Invalid authentication token. Please log in again.")
+        raise HTTPException(
+            status_code=401, detail="Invalid authentication token. Please log in again."
+        )
 
 
 async def generate_tokens(db: AsyncSession, user_id: str) -> Auth:
@@ -99,17 +111,15 @@ async def generate_tokens(db: AsyncSession, user_id: str) -> Auth:
     )
 
 
-async def regenerate_tokens(
-    db: AsyncSession, refresh_token: str
-) -> tuple[User, Auth]:
+async def regenerate_tokens(db: AsyncSession, refresh_token: str) -> tuple[User, Auth]:
     """Regenerate tokens using refresh token"""
     user = await verify_token(db, refresh_token, "refresh")
 
-    auth = await AuthSession.get(
-        db, refresh_token=refresh_token, user_id=user.id
-    )
+    auth = await AuthSession.get(db, refresh_token=refresh_token, user_id=user.id)
     if not auth:
-        raise HTTPException(status_code=401, detail="Invalid refresh token. Please sign in again.")
+        raise HTTPException(
+            status_code=401, detail="Invalid refresh token. Please sign in again."
+        )
 
     access_token = create_token(user.id, "access")
     refresh_token = create_token(user.id, "refresh")
@@ -144,4 +154,6 @@ async def revoke_token(db: AsyncSession, token: str) -> None:
     if auth:
         await auth.delete(db)
     else:
-        raise HTTPException(status_code=401, detail="Cannot sign out: Invalid or expired session.")
+        raise HTTPException(
+            status_code=401, detail="Cannot sign out: Invalid or expired session."
+        )
