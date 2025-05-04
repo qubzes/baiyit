@@ -5,7 +5,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.core.middleware import assign_role, get_user, security, sync_user
+from app.core.middleware import security, get_user, sync_user, assign_role
 from app.core.security.jwt import (
     generate_tokens,
     regenerate_tokens,
@@ -36,8 +36,7 @@ async def register(
             )
 
         user = User(**user_data.model_dump())
-        user.send_otp(is_new=True)
-        await user.save(db)
+        await user.send_otp(db, is_new=True)
         await sync_user(user)
         await assign_role(user.id, user.role.value)
 
@@ -51,7 +50,7 @@ async def register(
 @router.post("/request-otp")
 async def request_otp(
     data: RequestOTP, db: AsyncSession = Depends(get_db)
-) -> UserResponse:
+) -> dict[str, str]:
     """Request a new OTP for authentication"""
     try:
         user = await User.get(db, email=data.email)
@@ -61,10 +60,8 @@ async def request_otp(
                 detail="No account found with this email address. Please check the email or register a new account.",
             )
 
-        user.send_otp()
-        await user.save(db)
-
-        return UserResponse(**user.model_dump())
+        await user.send_otp(db)
+        return {"message": "Verification code sent successfully"}
     except HTTPException as http_err:
         raise http_err
     except Exception as e:
@@ -81,7 +78,7 @@ async def verify_otp(
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
 
-        if not user.verify_otp(data.otp):
+        if not await user.verify_otp(db, data.otp):
             raise HTTPException(
                 status_code=401,
                 detail="The verification code you entered is incorrect or has expired. Please try again or request a new code.",
@@ -93,10 +90,7 @@ async def verify_otp(
                 detail="Your account has been suspended. Please contact our support team at support@baiyit.com for assistance.",
             )
 
-        await user.save(db)
-
-        auth = await generate_tokens(db, user.id)
-        return AuthResponse(**auth.model_dump(), user=UserResponse(**user.model_dump()))
+        return await generate_tokens(db, user)
     except HTTPException as http_err:
         raise http_err
     except Exception as e:
@@ -122,8 +116,7 @@ async def refresh_token(
 ) -> AuthResponse:
     """Refresh access token"""
     try:
-        user, auth = await regenerate_tokens(db, data.refresh_token)
-        return AuthResponse(**auth.model_dump(), user=UserResponse(**user.model_dump()))
+        return await regenerate_tokens(db, data.refresh_token)
     except HTTPException as http_err:
         raise http_err
     except Exception as e:

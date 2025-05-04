@@ -2,9 +2,9 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, TypeVar
 from uuid import uuid4
 
-from sqlalchemy import DateTime, String, and_, func, or_, select
+from sqlalchemy import DateTime, String, and_, func, inspect, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, selectinload
 
 from app.core.database import Base
 
@@ -26,12 +26,43 @@ class BaseModel(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
-    def model_dump(self) -> dict[str, Any]:
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    def model_dump(
+        self, include_relationships: bool = False
+    ) -> dict[str, Any]:
+        result = {
+            c.name: getattr(self, c.name) for c in self.__table__.columns
+        }
+
+        if include_relationships:
+            for relationship in self.__mapper__.relationships:
+                rel_name = relationship.key
+                rel_value = getattr(self, rel_name)
+
+                if rel_value is not None:
+                    if hasattr(rel_value, "model_dump"):
+                        result[rel_name] = rel_value.model_dump()
+                    elif isinstance(rel_value, list):
+                        result[rel_name] = [
+                            item.model_dump() if hasattr(item, "model_dump") else item  # type: ignore
+                            for item in rel_value  # type: ignore
+                        ]
+                    else:
+                        result[rel_name] = rel_value
+
+        return result
 
     @classmethod
-    async def get(cls: type[T], db: AsyncSession, **filters: Any) -> T | None:
+    async def get(
+        cls: type[T],
+        db: AsyncSession,
+        load_relationships: bool = False,
+        **filters: Any,
+    ) -> T | None:
         query = select(cls)
+
+        if load_relationships:
+            query = query.options(selectinload("*"))
+
         for attr, value in filters.items():
             if hasattr(cls, attr):
                 query = query.where(getattr(cls, attr) == value)
@@ -50,11 +81,19 @@ class BaseModel(Base):
         use_or: bool = True,
         filters: Optional[Dict[str, Any]] = None,
         search: Optional[str] = None,
+        load_relationships: bool = False,
     ) -> tuple[List[T], int]:
         skip = (page - 1) * size
         query = select(cls)
         conditions: List[Any] = []
 
+        if load_relationships:
+            mapper = inspect(cls)
+            relationship_options = [
+                selectinload(getattr(cls, rel.key))
+                for rel in mapper.relationships
+            ]
+            query = query.options(*relationship_options)
         if filters:
             filter_conditions: List[Any] = []
             for attr, value in filters.items():
@@ -64,7 +103,9 @@ class BaseModel(Base):
                     raise ValueError(f"Invalid filter attribute: {attr}")
             if filter_conditions:
                 conditions.append(
-                    or_(*filter_conditions) if use_or else and_(*filter_conditions)
+                    or_(*filter_conditions)
+                    if use_or
+                    else and_(*filter_conditions)
                 )
 
         if search:
@@ -86,21 +127,29 @@ class BaseModel(Base):
                 query = query.where(condition)
 
         # Count total before pagination
-        count_query = (
-            select(cls).where(*query.whereclause.clauses)
-            if query.whereclause is not None
-            else select(cls)
-        )
-        count_result = await db.execute(
-            select(func.count()).select_from(count_query.subquery())
-        )
+        count_query = select(func.count())
+        if query.whereclause is not None:
+            if hasattr(query.whereclause, "clauses"):
+                count_query = count_query.select_from(
+                    select(cls).where(*query.whereclause.clauses).subquery()
+                )
+            else:
+                count_query = count_query.select_from(
+                    select(cls).where(query.whereclause).subquery()
+                )
+        else:
+            count_query = count_query.select_from(select(cls).subquery())
+
+        count_result = await db.execute(count_query)
         total = count_result.scalar_one()
 
         if sort_by:
             if not hasattr(cls, sort_by):
                 raise ValueError(f"Invalid sort attribute: {sort_by}")
             order_attr = getattr(cls, sort_by)
-            query = query.order_by(order_attr.desc() if descending else order_attr)
+            query = query.order_by(
+                order_attr.desc() if descending else order_attr
+            )
 
         query = query.offset(skip).limit(size)
         result = await db.execute(query)

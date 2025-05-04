@@ -25,7 +25,8 @@ async def get_user(
 ) -> User:
     """ """
     token = credentials.credentials
-    return await verify_token(db, token)
+    auth = await verify_token(db, token)
+    return auth.user
 
 
 async def sync_user(user: User) -> None:
@@ -71,7 +72,9 @@ async def check_permission(
     return allowed
 
 
-def has_permission(action: str, resource: str) -> Callable[[User], Awaitable[User]]:
+def has_permission(
+    action: str, resource: str
+) -> Callable[[User], Awaitable[User]]:
     """Returns a dependency function that checks if the user has permission to perform the action on the resource."""
 
     async def permission_dependency(

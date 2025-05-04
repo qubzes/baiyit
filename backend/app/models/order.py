@@ -1,10 +1,13 @@
 import enum
-from typing import List, Optional
-from sqlalchemy import ARRAY, Enum as SQLEnum, Float, ForeignKey, Integer, String, JSON
+from typing import List
+
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from app.models import BaseModel
-from app.models.user import User
 from app.models.product import Product
+from app.models.user import User
 
 
 class OrderStatus(enum.Enum):
@@ -28,8 +31,8 @@ class OrderItem(BaseModel):
     quantity: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     image: Mapped[str] = mapped_column(String, nullable=False)
 
-    order = relationship("Order", back_populates="items")
-    product = relationship(Product)
+    order: Mapped["Order"] = relationship("Order", back_populates="items")
+    product: Mapped[Product] = relationship(Product)
 
 
 class Order(BaseModel):
@@ -42,9 +45,11 @@ class Order(BaseModel):
     status: Mapped[OrderStatus] = mapped_column(
         SQLEnum(OrderStatus), nullable=False, default=OrderStatus.processing
     )
-    
+
     # Relationships
-    user = relationship(User, backref="orders")
-    items = relationship(OrderItem, back_populates="order", cascade="all, delete-orphan")
+    user: Mapped[User] = relationship(User, back_populates="orders")
+    items: Mapped[List[OrderItem]] = relationship(
+        OrderItem, back_populates="order", cascade="all, delete-orphan"
+    )
 
     SEARCH_FIELDS = ["id", "status"]

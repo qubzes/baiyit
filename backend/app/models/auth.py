@@ -5,11 +5,13 @@ from app.models import BaseModel
 from app.models.user import User
 
 
-class AuthSession(BaseModel):
+class Auth(BaseModel):
     __tablename__ = "auth_sessions"
 
+    user_id: Mapped[str] = mapped_column(
+        ForeignKey("users.id"), nullable=False
+    )
     access_token: Mapped[str] = mapped_column(String(500), nullable=False)
     refresh_token: Mapped[str] = mapped_column(String(500), nullable=False)
-    user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False)
 
-    user = relationship(User, backref="sessions")
+    user: Mapped[User] = relationship(User, back_populates="auth_sessions")

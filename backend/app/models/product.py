@@ -12,10 +12,9 @@ class Product(BaseModel):
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
-    original_price: Mapped[Optional[float]] = mapped_column(
+    discount_price: Mapped[Optional[float]] = mapped_column(
         Float, nullable=True
     )
-    discount: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     image: Mapped[str] = mapped_column(String, nullable=False)
     rating: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     category: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
@@ -25,3 +24,5 @@ class Product(BaseModel):
     )
 
     SEARCH_FIELDS = ["title", "description", "category"]
+
+# missing counts in stock

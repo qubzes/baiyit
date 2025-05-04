@@ -33,17 +33,6 @@ async def create_product(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/{product_id}", response_model=ProductResponse)
-async def get_product(
-    product_id: str, db: AsyncSession = Depends(get_db)
-) -> ProductResponse:
-    """Get a product by ID"""
-    product = await Product.get(db, id=product_id)
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-    return ProductResponse(**product.model_dump())
-
-
 @router.get("/", response_model=PaginatedResponse[ProductResponse])
 async def list_products(
     request: Annotated[ProductPaginatedRequest, Depends()],
@@ -92,18 +81,27 @@ async def list_products(
                     filtered_products.append(product)
             products = filtered_products
 
-        pages = (total + request.size - 1) // request.size
-
         return PaginatedResponse(
             data=[ProductResponse(**p.model_dump()) for p in products],
             total=total,
             page=request.page,
-            pages=pages,
+            pages=(total + request.size - 1) // request.size,
         )
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{product_id}", response_model=ProductResponse)
+async def get_product(
+    product_id: str, db: AsyncSession = Depends(get_db)
+) -> ProductResponse:
+    """Get a product by ID"""
+    product = await Product.get(db, id=product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return ProductResponse(**product.model_dump())
 
 
 @router.put("/{product_id}", response_model=ProductResponse)
