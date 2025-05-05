@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/card"
+import { Card } from "@/components/ui/card";
 
 interface AIMessageProps {
-  text: string
-  timestamp: string
+  text: string;
+  timestamp: string;
 }
 
 export function AIMessage({ text, timestamp }: AIMessageProps) {
@@ -17,8 +17,11 @@ export function AIMessage({ text, timestamp }: AIMessageProps) {
         </Card>
       </div>
       <span className="text-xs text-gray-400 mt-1 ml-10">
-        {new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        {new Date(timestamp).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
       </span>
     </div>
-  )
+  );
 }

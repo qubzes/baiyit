@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { motion, AnimatePresence } from "framer-motion"
-import { X, Minus, Plus, ArrowRight } from "lucide-react"
-import { useBag } from "@/hooks/use-bag"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
-import Link from "next/link"
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Minus, Plus, ArrowRight } from "lucide-react";
+import { useBag } from "@/hooks/use-bag";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 
 interface BagDrawerProps {
-  isOpen: boolean
-  onClose: () => void
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 export function BagDrawer({ isOpen, onClose }: BagDrawerProps) {
-  const { items, updateQuantity, removeItem, getTotalPrice } = useBag()
+  const { items, updateQuantity, removeItem, getTotalPrice } = useBag();
 
   return (
     <AnimatePresence>
@@ -45,7 +45,12 @@ export function BagDrawer({ isOpen, onClose }: BagDrawerProps) {
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
                   <div className="w-24 h-24 rounded-full bg-background-light flex items-center justify-center mb-4">
-                    <svg className="w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg
+                      className="w-12 h-12 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -54,8 +59,12 @@ export function BagDrawer({ isOpen, onClose }: BagDrawerProps) {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-medium mb-2">Your bag is empty</h3>
-                  <p className="text-gray-500 mb-6">Start adding items to your bag</p>
+                  <h3 className="text-xl font-medium mb-2">
+                    Your bag is empty
+                  </h3>
+                  <p className="text-gray-500 mb-6">
+                    Start adding items to your bag
+                  </p>
                   <Button className="button-accent" onClick={onClose}>
                     Continue Shopping
                   </Button>
@@ -82,26 +91,39 @@ export function BagDrawer({ isOpen, onClose }: BagDrawerProps) {
                       </div>
 
                       <div className="flex-1">
-                        <h4 className="font-medium text-primary-navy">{item.title}</h4>
-                        <p className="text-sm text-gray-500 mb-2">${item.price.toFixed(2)}</p>
+                        <h4 className="font-medium text-primary-navy">
+                          {item.title}
+                        </h4>
+                        <p className="text-sm text-gray-500 mb-2">
+                          ${item.price.toFixed(2)}
+                        </p>
 
                         <div className="flex items-center">
                           <Button
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-full"
-                            onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                            onClick={() =>
+                              updateQuantity(
+                                item.id,
+                                Math.max(1, item.quantity - 1),
+                              )
+                            }
                           >
                             <Minus className="h-3 w-3" />
                           </Button>
 
-                          <span className="mx-3 min-w-[2rem] text-center">{item.quantity}</span>
+                          <span className="mx-3 min-w-[2rem] text-center">
+                            {item.quantity}
+                          </span>
 
                           <Button
                             variant="outline"
                             size="icon"
                             className="h-8 w-8 rounded-full"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
                           >
                             <Plus className="h-3 w-3" />
                           </Button>
@@ -126,7 +148,9 @@ export function BagDrawer({ isOpen, onClose }: BagDrawerProps) {
               <div className="p-6 border-t">
                 <div className="flex justify-between mb-4">
                   <span className="font-medium">Subtotal</span>
-                  <span className="font-medium">${getTotalPrice().toFixed(2)}</span>
+                  <span className="font-medium">
+                    ${getTotalPrice().toFixed(2)}
+                  </span>
                 </div>
 
                 <Link href="/bag/checkout">
@@ -141,5 +165,5 @@ export function BagDrawer({ isOpen, onClose }: BagDrawerProps) {
         </>
       )}
     </AnimatePresence>
-  )
+  );
 }

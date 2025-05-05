@@ -7,14 +7,23 @@ import { Button } from "@/components/ui/button"
 import { X, Camera, PhoneCall, SendHorizontal, Sparkles } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useMobile } from "@/hooks/use-mobile"
-import { ProductSuggestion } from "@/components/ai-assistant/product-suggestion"
-import { ProductDetail } from "@/components/ai-assistant/product-detail"
-import type { Product } from "@/types/product"
+import { ProductSuggestions } from "@/components/ai-assistant/product-suggestions"
+import Image from "next/image"
 
 export function AIAssistantModal() {
-  const { isOpen, closeAssistant, messages, input, setInput, sendMessage, isLoading } = useAIAssistant()
+  const {
+    isOpen,
+    closeAssistant,
+    messages,
+    input,
+    setInput,
+    sendMessage,
+    isLoading,
+    contextInfo,
+    selectedProduct,
+    clearSelectedProduct,
+  } = useAIAssistant()
   const isMobile = useMobile()
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [showChat, setShowChat] = useState(true)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -151,21 +160,14 @@ export function AIAssistantModal() {
                             </div>
                           ) : (
                             <div>
-                              <div className="text-gray-800 max-w-[85%]">
+                              <div className="bg-gray-100 px-4 py-2 rounded-2xl rounded-tl-none max-w-[85%] inline-block">
                                 <p>{message.text}</p>
                               </div>
+
                               {/* Product suggestions after AI messages */}
-                              {index > 0 && index % 2 === 1 && (
-                                <div className="mt-3 flex flex-wrap gap-2">
-                                  <ProductSuggestion
-                                    onSelect={(product) => {
-                                      setSelectedProduct(product)
-                                      if (isMobile) {
-                                        setShowChat(false)
-                                      }
-                                    }}
-                                    messageIndex={index}
-                                  />
+                              {index === messages.length - 1 && message.sender === "ai" && (
+                                <div className="mt-3 grid grid-cols-2 md:grid-cols-3 gap-2">
+                                  <ProductSuggestions />
                                 </div>
                               )}
                             </div>
@@ -175,19 +177,21 @@ export function AIAssistantModal() {
 
                       {isLoading && (
                         <div>
-                          <div className="flex space-x-2 px-4 py-2 max-w-[85%]">
-                            <div
-                              className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
-                              style={{ animationDelay: "0ms" }}
-                            />
-                            <div
-                              className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
-                              style={{ animationDelay: "150ms" }}
-                            />
-                            <div
-                              className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
-                              style={{ animationDelay: "300ms" }}
-                            />
+                          <div className="bg-gray-100 px-4 py-2 rounded-2xl rounded-tl-none max-w-[85%] inline-block">
+                            <div className="flex space-x-2">
+                              <div
+                                className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                                style={{ animationDelay: "0ms" }}
+                              />
+                              <div
+                                className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                                style={{ animationDelay: "150ms" }}
+                              />
+                              <div
+                                className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                                style={{ animationDelay: "300ms" }}
+                              />
+                            </div>
                           </div>
                         </div>
                       )}
@@ -199,22 +203,61 @@ export function AIAssistantModal() {
               </div>
 
               {/* Product details - only show when a product is selected */}
-              {selectedProduct && !isMobile && (
-                <div className="hidden md:block md:w-1/2 border-l border-gray-100 overflow-y-auto">
-                  <ProductDetail product={selectedProduct} onClose={() => setSelectedProduct(null)} />
-                </div>
-              )}
+              {selectedProduct && (
+                <div
+                  className={`${isMobile && !showChat ? "block" : "hidden md:block"} md:w-1/2 border-l border-gray-100 overflow-y-auto`}
+                >
+                  <div className="p-4 border-b flex items-center justify-between">
+                    <h3 className="font-medium">Product Details</h3>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        if (isMobile) {
+                          setShowChat(true)
+                        } else {
+                          clearSelectedProduct()
+                        }
+                      }}
+                      className={isMobile ? "" : "md:hidden"}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
 
-              {/* Mobile product details view */}
-              {selectedProduct && isMobile && !showChat && (
-                <div className="flex-1 overflow-y-auto">
-                  <ProductDetail
-                    product={selectedProduct}
-                    onClose={() => {
-                      setShowChat(true)
-                    }}
-                    isMobile={true}
-                  />
+                  <div className="p-4">
+                    <div className="relative aspect-square w-full overflow-hidden rounded-lg mb-4">
+                      <Image
+                        src={selectedProduct.image || "/placeholder.svg"}
+                        alt={selectedProduct.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+
+                    <h3 className="text-lg font-medium mb-1">{selectedProduct.title}</h3>
+                    <p className="text-xl font-bold mb-2">${selectedProduct.price.toFixed(2)}</p>
+                    <p className="text-sm text-gray-600 mb-4">{selectedProduct.description}</p>
+
+                    <div className="flex flex-col space-y-2">
+                      <Button
+                        onClick={() => {
+                          // Handle add to cart
+                        }}
+                        className="bg-primary-navy hover:bg-primary-navy/90"
+                      >
+                        Add to Cart
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          // Handle view details
+                        }}
+                      >
+                        View Details
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

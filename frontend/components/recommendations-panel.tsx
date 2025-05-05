@@ -1,53 +1,67 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { ProductCard } from "@/components/product-card"
-import type { Product } from "@/types/product"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { ProductCard } from "@/components/product-card";
+import type { Product } from "@/types/product";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface RecommendationsPanelProps {
-  recommendations: Product[]
+  recommendations: Product[];
 }
 
-export function RecommendationsPanel({ recommendations }: RecommendationsPanelProps) {
-  const [scrollPosition, setScrollPosition] = useState(0)
-  const scrollAmount = 300
+export function RecommendationsPanel({
+  recommendations,
+}: RecommendationsPanelProps) {
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollAmount = 300;
 
   const handleScrollLeft = () => {
-    const newPosition = Math.max(0, scrollPosition - scrollAmount)
-    setScrollPosition(newPosition)
+    const newPosition = Math.max(0, scrollPosition - scrollAmount);
+    setScrollPosition(newPosition);
     document.getElementById("recommendations-container")?.scrollTo({
       left: newPosition,
       behavior: "smooth",
-    })
-  }
+    });
+  };
 
   const handleScrollRight = () => {
-    const container = document.getElementById("recommendations-container")
+    const container = document.getElementById("recommendations-container");
     if (container) {
-      const newPosition = Math.min(container.scrollWidth - container.clientWidth, scrollPosition + scrollAmount)
-      setScrollPosition(newPosition)
+      const newPosition = Math.min(
+        container.scrollWidth - container.clientWidth,
+        scrollPosition + scrollAmount,
+      );
+      setScrollPosition(newPosition);
       container.scrollTo({
         left: newPosition,
         behavior: "smooth",
-      })
+      });
     }
-  }
+  };
 
   return (
     <div className="glass-panel h-full flex flex-col">
       <div className="p-4 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-primary-navy">Live Recommendations</h2>
-        <p className="text-sm text-gray-500">Products tailored to your conversation</p>
+        <h2 className="text-xl font-bold text-primary-navy">
+          Live Recommendations
+        </h2>
+        <p className="text-sm text-gray-500">
+          Products tailored to your conversation
+        </p>
       </div>
 
       <div className="flex-1 overflow-hidden p-4 relative">
         {recommendations.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-6">
             <div className="w-16 h-16 rounded-full bg-accent-sky/10 flex items-center justify-center mb-4">
-              <svg className="h-8 w-8 text-accent-sky" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                className="h-8 w-8 text-accent-sky"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -57,7 +71,9 @@ export function RecommendationsPanel({ recommendations }: RecommendationsPanelPr
               </svg>
             </div>
             <h3 className="text-xl font-medium mb-2">No recommendations yet</h3>
-            <p className="text-gray-500 mb-6">Start a conversation to get personalized product recommendations</p>
+            <p className="text-gray-500 mb-6">
+              Start a conversation to get personalized product recommendations
+            </p>
           </div>
         ) : (
           <>
@@ -105,5 +121,5 @@ export function RecommendationsPanel({ recommendations }: RecommendationsPanelPr
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -2,143 +2,95 @@
 
 import { useState, useEffect } from "react"
 import type { Product } from "@/types/product"
+import type { ProductQueryParams } from "@/lib/api/product-service"
 
-interface UseProductsOptions {
-  category?: string
-  featured?: boolean
-  limit?: number
-}
+interface UseProductsOptions extends ProductQueryParams {}
 
 export function useProducts(options: UseProductsOptions = {}) {
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [totalProducts, setTotalProducts] = useState(0)
+  const [currentPage, setCurrentPage] = useState(options.page || 1)
+  const [totalPages, setTotalPages] = useState(1)
 
   useEffect(() => {
     const fetchProducts = async () => {
       setIsLoading(true)
+      setError(null)
 
-      // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      try {
+        // Build query string
+        const params = new URLSearchParams()
 
-      // Sample products data with real images
-      const allProducts: Product[] = [
-        {
-          id: "laptop-1",
-          title: "UltraBook Pro 16",
-          description: "Powerful laptop for professionals",
-          price: 1299.99,
-          image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071",
-          rating: 4.8,
-          featured: true,
-          category: "electronics",
-          specs: ["16GB RAM", "512GB SSD", "Intel i7", "14 hour battery"],
-        },
-        {
-          id: "laptop-2",
-          title: "GameMaster X",
-          description: "Ultimate gaming experience",
-          price: 1799.99,
-          originalPrice: 1999.99,
-          discount: 10,
-          image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?q=80&w=2068",
-          rating: 4.7,
-          featured: true,
-          category: "electronics",
-          specs: ["32GB RAM", "1TB SSD", "RTX 4070", '17.3" 144Hz display'],
-        },
-        {
-          id: "phone-1",
-          title: "Galaxy S22 Ultra",
-          description: "Professional-grade camera system",
-          price: 1199.99,
-          image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=2127",
-          rating: 4.7,
-          featured: true,
-          category: "electronics",
-          specs: ["108MP camera", '6.8" AMOLED', "5000mAh battery", "256GB storage"],
-        },
-        {
-          id: "audio-1",
-          title: "SoundMaster Pro",
-          description: "Premium noise cancellation",
-          price: 349.99,
-          image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070",
-          rating: 4.8,
-          featured: false,
-          category: "electronics",
-          specs: ["40h battery", "ANC", "Hi-Res Audio", "Bluetooth 5.2"],
-        },
-        {
-          id: "watch-1",
-          title: "Smart Watch Pro",
-          description: "Track your fitness and stay connected",
-          price: 249.99,
-          image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=2072",
-          rating: 4.5,
-          featured: true,
-          category: "electronics",
-          specs: ["Heart rate monitor", "GPS", "7-day battery", "Water resistant"],
-        },
-        {
-          id: "tv-1",
-          title: 'Ultra HD Smart TV 65"',
-          description: "Immersive viewing experience",
-          price: 799.99,
-          originalPrice: 999.99,
-          discount: 20,
-          image: "https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=2070",
-          rating: 4.7,
-          featured: true,
-          category: "electronics",
-          specs: ['65" 4K', "HDR10+", "Smart assistant", "Game mode"],
-        },
-        {
-          id: "fashion-1",
-          title: "Premium Wool Coat",
-          description: "Elegant wool coat for winter",
-          price: 199.99,
-          image: "https://images.unsplash.com/photo-1544022613-e87ca75a784a?q=80&w=1974",
-          rating: 4.6,
-          featured: false,
-          category: "fashion",
-          specs: ["100% Wool", "Dry clean only", "Multiple colors", "Sizes XS-XXL"],
-        },
-        {
-          id: "furniture-1",
-          title: "Ergonomic Office Chair",
-          description: "Premium comfortable chair for your workspace",
-          price: 349.99,
-          originalPrice: 399.99,
-          discount: 12,
-          image: "https://images.unsplash.com/photo-1505843490701-5be5d1b31f8f?q=80&w=1887",
-          rating: 4.9,
-          featured: true,
-          category: "home",
-          specs: ["Adjustable height", "Lumbar support", "Breathable mesh", "360° swivel"],
-        },
-      ]
+        if (options.page) params.set("page", options.page.toString())
+        if (options.size) params.set("size", options.size.toString())
+        if (options.sort_by) params.set("sort_by", options.sort_by)
+        if (options.descending !== undefined) params.set("descending", options.descending.toString())
+        if (options.search) params.set("search", options.search)
+        if (options.category) params.set("category", options.category)
+        if (options.featured !== undefined) params.set("featured", options.featured.toString())
+        if (options.min_price) params.set("min_price", options.min_price.toString())
+        if (options.max_price) params.set("max_price", options.max_price.toString())
+        if (options.min_rating) params.set("min_rating", options.min_rating.toString())
 
-      // Filter products based on options
-      let filteredProducts = [...allProducts]
+        // Fetch from our server-side API
+        const response = await fetch(`/api/products?${params.toString()}`)
+        const data = await response.json()
 
-      if (options.category) {
-        filteredProducts = filteredProducts.filter((p) => p.category === options.category)
+        if (!response.ok) {
+          setError(data.error || "Failed to fetch products")
+        } else {
+          // Map API response to our Product type
+          const mappedProducts: Product[] = data.data.map((item: any) => ({
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            price: item.price,
+            originalPrice: item.discount_price,
+            discount: item.discount_price
+              ? Math.round(((item.discount_price - item.price) / item.discount_price) * 100)
+              : undefined,
+            image: item.image,
+            rating: item.rating,
+            category: item.category || undefined,
+            featured: item.featured || false,
+            specs: item.specs || undefined,
+          }))
+
+          setProducts(mappedProducts)
+          setTotalProducts(data.total)
+          setCurrentPage(data.page)
+          setTotalPages(data.pages)
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred while fetching products")
+        console.error("Error fetching products:", err)
+      } finally {
+        setIsLoading(false)
       }
-
-      if (options.featured) {
-        filteredProducts = filteredProducts.filter((p) => p.featured)
-      }
-
-      if (options.limit) {
-        filteredProducts = filteredProducts.slice(0, options.limit)
-      }
-
-      setProducts(filteredProducts)
-      setIsLoading(false)
     }
 
     fetchProducts()
-  }, [options.category, options.featured, options.limit])
+  }, [
+    options.page,
+    options.size,
+    options.sort_by,
+    options.descending,
+    options.search,
+    options.category,
+    options.featured,
+    options.min_price,
+    options.max_price,
+    options.min_rating,
+  ])
 
-  return { products, isLoading }
+  return {
+    products,
+    isLoading,
+    error,
+    totalProducts,
+    currentPage,
+    totalPages,
+  }
 }

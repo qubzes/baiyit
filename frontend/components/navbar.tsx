@@ -1,22 +1,23 @@
 "use client"
-
-import { useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ShoppingBag, User } from "lucide-react"
-import { useBag } from "@/hooks/use-bag"
+import { ShoppingCart, User } from "lucide-react"
+import { useCart } from "@/hooks/use-cart"
 import { Button } from "@/components/ui/button"
-import { BagDrawer } from "@/components/bag-drawer"
 import { AIAssistantInput } from "@/components/ai-assistant/ai-assistant-input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useAuth } from "@/contexts/auth-context"
+import { CartDrawer } from "./cart-drawer"
 
 export function Navbar() {
-  const { items } = useBag()
-  const [isBagOpen, setIsBagOpen] = useState(false)
+  const { items, openCart } = useCart()
+  const { user, isAuthenticated } = useAuth()
 
-  // Mock user state - in a real app, this would come from authentication
-  const isLoggedIn = false
-  const user = { name: "User", image: "" }
+  // Debug logging
+  const handleCartClick = () => {
+    console.log("Cart icon clicked")
+    openCart()
+  }
 
   return (
     <>
@@ -38,8 +39,13 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" className="relative" onClick={() => setIsBagOpen(true)}>
-              <ShoppingBag className="h-5 w-5 text-primary-navy" />
+            <Button
+              variant="ghost"
+              className="relative"
+              onClick={handleCartClick}
+              aria-label={`Open cart with ${items.length} items`}
+            >
+              <ShoppingCart className="h-5 w-5 text-primary-navy" />
               {items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-accent-sky text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                   {items.length}
@@ -48,14 +54,14 @@ export function Navbar() {
             </Button>
 
             {/* Profile/Login */}
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <Button asChild variant="ghost" size="sm" className="px-2 flex items-center gap-1.5" aria-label="Profile">
                 <Link href="/profile">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={user.image || "/placeholder.svg"} alt={user.name} />
-                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.first_name || "User"} />
+                    <AvatarFallback>{user?.first_name?.charAt(0) || "U"}</AvatarFallback>
                   </Avatar>
-                  <span className="hidden sm:inline ml-2">{user.name}</span>
+                  <span className="hidden sm:inline ml-2">{user?.first_name || "User"}</span>
                 </Link>
               </Button>
             ) : (
@@ -75,7 +81,8 @@ export function Navbar() {
         <AIAssistantInput />
       </div>
 
-      <BagDrawer isOpen={isBagOpen} onClose={() => setIsBagOpen(false)} />
+      {/* Cart Drawer */}
+      <CartDrawer />
     </>
   )
 }

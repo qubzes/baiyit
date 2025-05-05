@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useBag as useContextBag } from "@/contexts/bag-context"
+import { useBag as useContextBag } from "@/contexts/bag-context";
 
 export function useBag() {
-  return useContextBag()
+  return useContextBag();
 }

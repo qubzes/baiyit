@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { useAIAssistant } from "@/hooks/use-ai-assistant"
-import { AIAssistantModal } from "@/components/ai-assistant/ai-assistant-modal"
-import { MessageSquare } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { Button } from "@/components/ui/button";
+import { useAIAssistant } from "@/hooks/use-ai-assistant";
+import { AIAssistantModal } from "@/components/ai-assistant/ai-assistant-modal";
+import { MessageSquare } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function AIAssistantButton() {
-  const { isOpen, openAssistant } = useAIAssistant()
+  const { isOpen, openAssistant } = useAIAssistant();
 
   return (
     <>
@@ -32,5 +32,5 @@ export function AIAssistantButton() {
 
       <AIAssistantModal />
     </>
-  )
+  );
 }

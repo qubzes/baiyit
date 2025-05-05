@@ -1,8 +1,8 @@
-import { Card } from "@/components/ui/card"
+import { Card } from "@/components/ui/card";
 
 interface UserMessageProps {
-  text: string
-  timestamp: string
+  text: string;
+  timestamp: string;
 }
 
 export function UserMessage({ text, timestamp }: UserMessageProps) {
@@ -17,8 +17,11 @@ export function UserMessage({ text, timestamp }: UserMessageProps) {
         </div>
       </div>
       <span className="text-xs text-gray-400 mt-1 mr-10">
-        {new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        {new Date(timestamp).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
       </span>
     </div>
-  )
+  );
 }

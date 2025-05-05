@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 interface SearchBarProps {
-  onClose?: () => void
+  onClose?: () => void;
 }
 
 export function SearchBar({ onClose }: SearchBarProps) {
-  const [query, setQuery] = useState("")
-  const router = useRouter()
+  const [query, setQuery] = useState("");
+  const router = useRouter();
 
   const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`)
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
       if (onClose) {
-        onClose()
+        onClose();
       }
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSearch} className="w-full">
@@ -46,5 +46,5 @@ export function SearchBar({ onClose }: SearchBarProps) {
         </Button>
       </div>
     </form>
-  )
+  );
 }

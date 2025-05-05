@@ -21,6 +21,9 @@ interface AIAssistantContextType {
   isLoading: boolean
   contextInfo: ContextInfo
   updateContextInfo: (info: Partial<ContextInfo>) => void
+  selectedProduct: Product | null
+  selectProduct: (product: Product) => void
+  clearSelectedProduct: () => void
 }
 
 export const AIAssistantContext = createContext<AIAssistantContextType | undefined>(undefined)
@@ -31,6 +34,7 @@ export function AIAssistantProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false)
   const [input, setInput] = useState("")
   const [contextInfo, setContextInfo] = useState<ContextInfo>({ page: "home" })
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
   const openAssistant = useCallback(() => {
     setIsOpen(true)
@@ -42,6 +46,14 @@ export function AIAssistantProvider({ children }: { children: ReactNode }) {
 
   const updateContextInfo = useCallback((info: Partial<ContextInfo>) => {
     setContextInfo((prev) => ({ ...prev, ...info }))
+  }, [])
+
+  const selectProduct = useCallback((product: Product) => {
+    setSelectedProduct(product)
+  }, [])
+
+  const clearSelectedProduct = useCallback(() => {
+    setSelectedProduct(null)
   }, [])
 
   const sendMessage = useCallback(
@@ -146,6 +158,9 @@ export function AIAssistantProvider({ children }: { children: ReactNode }) {
         isLoading,
         contextInfo,
         updateContextInfo,
+        selectedProduct,
+        selectProduct,
+        clearSelectedProduct,
       }}
     >
       {children}

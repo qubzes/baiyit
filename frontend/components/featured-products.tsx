@@ -1,43 +1,46 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ProductCard } from "@/components/product-card"
-import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { useProducts } from "@/hooks/use-products"
+import { useState } from "react";
+import { ProductCard } from "@/components/product-card";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useProducts } from "@/hooks/use-products";
 
 export function FeaturedProducts() {
-  const { products } = useProducts({ featured: true })
-  const [scrollPosition, setScrollPosition] = useState(0)
-  const scrollAmount = 300
+  const { products } = useProducts({ featured: true });
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const scrollAmount = 300;
 
   const handleScrollLeft = () => {
-    const newPosition = Math.max(0, scrollPosition - scrollAmount)
-    setScrollPosition(newPosition)
+    const newPosition = Math.max(0, scrollPosition - scrollAmount);
+    setScrollPosition(newPosition);
     document.getElementById("featured-products-container")?.scrollTo({
       left: newPosition,
       behavior: "smooth",
-    })
-  }
+    });
+  };
 
   const handleScrollRight = () => {
-    const container = document.getElementById("featured-products-container")
+    const container = document.getElementById("featured-products-container");
     if (container) {
-      const newPosition = Math.min(container.scrollWidth - container.clientWidth, scrollPosition + scrollAmount)
-      setScrollPosition(newPosition)
+      const newPosition = Math.min(
+        container.scrollWidth - container.clientWidth,
+        scrollPosition + scrollAmount,
+      );
+      setScrollPosition(newPosition);
       container.scrollTo({
         left: newPosition,
         behavior: "smooth",
-      })
+      });
     }
-  }
+  };
 
   if (products.length === 0) {
     return (
       <div className="text-center py-8">
         <p>Loading featured products...</p>
       </div>
-    )
+    );
   }
 
   return (
@@ -73,5 +76,5 @@ export function FeaturedProducts() {
         <ChevronRight className="h-5 w-5" />
       </Button>
     </div>
-  )
+  );
 }

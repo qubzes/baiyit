@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import type { Acquisition } from "@/types/acquisition"
+import { useState, useEffect } from "react";
+import type { Acquisition } from "@/types/acquisition";
 
 export function useAcquisitions() {
-  const [acquisitions, setAcquisitions] = useState<Acquisition[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [acquisitions, setAcquisitions] = useState<Acquisition[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Simulate API call
     const fetchAcquisitions = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
 
       // Simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Mock data
       const mockAcquisitions: Acquisition[] = [
@@ -69,14 +69,14 @@ export function useAcquisitions() {
             },
           ],
         },
-      ]
+      ];
 
-      setAcquisitions(mockAcquisitions)
-      setIsLoading(false)
-    }
+      setAcquisitions(mockAcquisitions);
+      setIsLoading(false);
+    };
 
-    fetchAcquisitions()
-  }, [])
+    fetchAcquisitions();
+  }, []);
 
-  return { acquisitions, isLoading }
+  return { acquisitions, isLoading };
 }

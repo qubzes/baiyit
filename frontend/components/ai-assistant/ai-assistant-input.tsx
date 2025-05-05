@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect, type FormEvent } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Camera, PhoneCall, SendHorizontal, Sparkles, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useAIAssistant } from "@/hooks/use-ai-assistant"
-import { useTypewriter } from "react-simple-typewriter"
+import { useState, useRef, useEffect, type FormEvent } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Camera,
+  PhoneCall,
+  SendHorizontal,
+  Sparkles,
+  Search,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useAIAssistant } from "@/hooks/use-ai-assistant";
+import { useTypewriter } from "react-simple-typewriter";
 
 export function AIAssistantInput() {
-  const { sendMessage, openAssistant, isLoading } = useAIAssistant()
-  const [inputValue, setInputValue] = useState("")
-  const [isFocused, setIsFocused] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const suggestionsRef = useRef<HTMLDivElement>(null)
+  const { sendMessage, openAssistant, isLoading } = useAIAssistant();
+  const [inputValue, setInputValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
 
   const slogans = [
     "What can Baiyit help you find today?",
@@ -27,7 +33,7 @@ export function AIAssistantInput() {
     "Your shopping assistant, just type your wish.",
     "Unlock smarter shopping. Ask Baiyit anything.",
     "Baiyit: Your shortcut to the perfect purchase.",
-  ]
+  ];
 
   const [typewriterPlaceholder] = useTypewriter({
     words: slogans,
@@ -35,7 +41,7 @@ export function AIAssistantInput() {
     typeSpeed: 50,
     deleteSpeed: 20,
     delaySpeed: 1500,
-  })
+  });
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -46,32 +52,32 @@ export function AIAssistantInput() {
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
-        setIsFocused(false)
+        setIsFocused(false);
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!inputValue.trim() || isLoading) return
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading) return;
 
-    sendMessage(inputValue.trim())
-    setInputValue("")
-    setIsFocused(false)
-    openAssistant()
-  }
+    sendMessage(inputValue.trim());
+    setInputValue("");
+    setIsFocused(false);
+    openAssistant();
+  };
 
   const handleSuggestionClick = (suggestion: string) => {
-    sendMessage(suggestion)
-    setInputValue("")
-    setIsFocused(false)
-    openAssistant()
-  }
+    sendMessage(suggestion);
+    setInputValue("");
+    setIsFocused(false);
+    openAssistant();
+  };
 
   return (
     <div className="w-full flex justify-center items-center bg-transparent relative">
@@ -87,7 +93,9 @@ export function AIAssistantInput() {
             <Input
               ref={inputRef}
               type="text"
-              placeholder={typewriterPlaceholder || "Tell Baiyit what you need..."}
+              placeholder={
+                typewriterPlaceholder || "Tell Baiyit what you need..."
+              }
               className="h-12 rounded-full pl-12 pr-24 text-base border-gray-200 focus-visible:ring-accent-sky"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
@@ -170,5 +178,5 @@ export function AIAssistantInput() {
         </AnimatePresence>
       </motion.div>
     </div>
-  )
+  );
 }

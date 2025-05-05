@@ -1,37 +1,43 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import type { Message } from "@/types/chat"
-import type { Product } from "@/types/product"
+import { useState, useEffect } from "react";
+import type { Message } from "@/types/chat";
+import type { Product } from "@/types/product";
 
 export function useRecommendations(messages: Message[]) {
-  const [recommendations, setRecommendations] = useState<Product[]>([])
+  const [recommendations, setRecommendations] = useState<Product[]>([]);
 
   useEffect(() => {
-    if (messages.length === 0) return
+    if (messages.length === 0) return;
 
     // Get the last message
-    const lastMessage = messages[messages.length - 1]
+    const lastMessage = messages[messages.length - 1];
 
     // Only generate recommendations for AI messages
-    if (lastMessage.sender !== "ai") return
+    if (lastMessage.sender !== "ai") return;
 
     // Generate mock recommendations based on the message content
-    const mockRecommendations = generateMockRecommendations(lastMessage.text, messages)
-    setRecommendations(mockRecommendations)
-  }, [messages])
+    const mockRecommendations = generateMockRecommendations(
+      lastMessage.text,
+      messages,
+    );
+    setRecommendations(mockRecommendations);
+  }, [messages]);
 
-  return { recommendations }
+  return { recommendations };
 }
 
 // Helper function to generate mock recommendations
-function generateMockRecommendations(text: string, messages: Message[]): Product[] {
+function generateMockRecommendations(
+  text: string,
+  messages: Message[],
+): Product[] {
   // Check all user messages for keywords
-  const userMessages = messages.filter((msg) => msg.sender === "user")
+  const userMessages = messages.filter((msg) => msg.sender === "user");
   const userText = userMessages
     .map((msg) => msg.text)
     .join(" ")
-    .toLowerCase()
+    .toLowerCase();
 
   if (userText.includes("laptop") || userText.includes("computer")) {
     return [
@@ -73,7 +79,7 @@ function generateMockRecommendations(text: string, messages: Message[]): Product
         rating: 4.9,
         specs: ["64GB RAM", "2TB SSD", "Intel Xeon", '15.6" 4K display'],
       },
-    ]
+    ];
   }
 
   if (userText.includes("phone") || userText.includes("smartphone")) {
@@ -85,7 +91,12 @@ function generateMockRecommendations(text: string, messages: Message[]): Product
         price: 1199.99,
         image: "/placeholder.svg?height=400&width=400",
         rating: 4.7,
-        specs: ["108MP camera", '6.8" AMOLED', "5000mAh battery", "256GB storage"],
+        specs: [
+          "108MP camera",
+          '6.8" AMOLED',
+          "5000mAh battery",
+          "256GB storage",
+        ],
       },
       {
         id: "phone-2",
@@ -94,7 +105,12 @@ function generateMockRecommendations(text: string, messages: Message[]): Product
         price: 999.99,
         image: "/placeholder.svg?height=400&width=400",
         rating: 4.8,
-        specs: ["A16 Bionic", "Dynamic Island", "48MP camera", '6.1" ProMotion'],
+        specs: [
+          "A16 Bionic",
+          "Dynamic Island",
+          "48MP camera",
+          '6.1" ProMotion',
+        ],
       },
       {
         id: "phone-3",
@@ -107,7 +123,7 @@ function generateMockRecommendations(text: string, messages: Message[]): Product
         rating: 4.6,
         specs: ["Tensor G2", "Magic Eraser", "50MP camera", '6.7" LTPO OLED'],
       },
-    ]
+    ];
   }
 
   if (userText.includes("headphone") || userText.includes("earbuds")) {
@@ -130,7 +146,12 @@ function generateMockRecommendations(text: string, messages: Message[]): Product
         discount: 20,
         image: "/placeholder.svg?height=400&width=400",
         rating: 4.7,
-        specs: ["8h playback", "Wireless charging", "IPX7 waterproof", "Touch controls"],
+        specs: [
+          "8h playback",
+          "Wireless charging",
+          "IPX7 waterproof",
+          "Touch controls",
+        ],
       },
       {
         id: "audio-3",
@@ -139,9 +160,14 @@ function generateMockRecommendations(text: string, messages: Message[]): Product
         price: 279.99,
         image: "/placeholder.svg?height=400&width=400",
         rating: 4.6,
-        specs: ["36h battery", "Enhanced bass", "Foldable design", "Built-in mic"],
+        specs: [
+          "36h battery",
+          "Enhanced bass",
+          "Foldable design",
+          "Built-in mic",
+        ],
       },
-    ]
+    ];
   }
 
   // Default recommendations if no specific category is detected
@@ -173,7 +199,12 @@ function generateMockRecommendations(text: string, messages: Message[]): Product
       price: 39.99,
       image: "/placeholder.svg?height=400&width=400",
       rating: 4.3,
-      specs: ["15W fast charging", "Multi-device", "LED indicator", "Slim design"],
+      specs: [
+        "15W fast charging",
+        "Multi-device",
+        "LED indicator",
+        "Slim design",
+      ],
     },
-  ]
+  ];
 }

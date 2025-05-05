@@ -1,49 +1,50 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useRef, useEffect } from "react"
-import { useAIAssistant } from "@/hooks/use-ai-assistant"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Search, MessageSquare, Sparkles, ArrowRight } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { AIAssistantModal } from "@/components/ai-assistant/ai-assistant-modal"
-import { usePathname } from "next/navigation"
-import { useMobile } from "@/hooks/use-mobile"
+import { useState, useRef, useEffect } from "react";
+import { useAIAssistant } from "@/hooks/use-ai-assistant";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, MessageSquare, Sparkles, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { AIAssistantModal } from "@/components/ai-assistant/ai-assistant-modal";
+import { usePathname } from "next/navigation";
+import { useMobile } from "@/hooks/use-mobile";
 
 export function AIAssistantBar() {
-  const { isOpen, openAssistant, closeAssistant, sendMessage, contextInfo } = useAIAssistant()
-  const [query, setQuery] = useState("")
-  const [isFocused, setIsFocused] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const pathname = usePathname()
-  const isMobile = useMobile()
+  const { isOpen, openAssistant, closeAssistant, sendMessage, contextInfo } =
+    useAIAssistant();
+  const [query, setQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const pathname = usePathname();
+  const isMobile = useMobile();
 
   // Close the assistant when navigating to a new page
   useEffect(() => {
-    closeAssistant()
-  }, [pathname, closeAssistant])
+    closeAssistant();
+  }, [pathname, closeAssistant]);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (query.trim()) {
-      sendMessage(query)
-      setQuery("")
-      openAssistant()
+      sendMessage(query);
+      setQuery("");
+      openAssistant();
     }
-  }
+  };
 
   // Generate placeholder based on current context
   const getPlaceholder = () => {
     if (contextInfo.page === "product" && contextInfo.data) {
-      return `Ask about ${contextInfo.data.title}...`
+      return `Ask about ${contextInfo.data.title}...`;
     } else if (contextInfo.page === "category") {
-      return `Ask about ${contextInfo.data?.name || "this category"}...`
+      return `Ask about ${contextInfo.data?.name || "this category"}...`;
     } else {
-      return "Ask Baiyit to help you shop..."
+      return "Ask Baiyit to help you shop...";
     }
-  }
+  };
 
   return (
     <>
@@ -76,7 +77,9 @@ export function AIAssistantBar() {
                 type="submit"
                 size="sm"
                 className={`mr-1 rounded-full transition-all duration-300 ${
-                  query.trim() ? "bg-accent-sky hover:bg-accent-sky/90" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                  query.trim()
+                    ? "bg-accent-sky hover:bg-accent-sky/90"
+                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                 }`}
                 disabled={!query.trim()}
               >
@@ -105,8 +108,8 @@ export function AIAssistantBar() {
                         variant="ghost"
                         className="justify-start h-auto py-2 text-sm"
                         onClick={() => {
-                          setQuery(suggestion)
-                          inputRef.current?.focus()
+                          setQuery(suggestion);
+                          inputRef.current?.focus();
                         }}
                       >
                         <Search className="h-3 w-3 mr-2 text-gray-400" />
@@ -123,5 +126,5 @@ export function AIAssistantBar() {
 
       <AIAssistantModal />
     </>
-  )
+  );
 }

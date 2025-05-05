@@ -1,39 +1,41 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import { useParams } from "next/navigation"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
 import {
   ArrowLeft,
   Heart,
   Share2,
-  ShoppingBag,
+  ShoppingCart,
   Star,
   ChevronRight,
   Truck,
   RotateCw,
   Shield,
   MessageSquare,
-} from "lucide-react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useProducts } from "@/hooks/use-products"
-import { useBag } from "@/hooks/use-bag"
-import { useAIAssistant } from "@/hooks/use-ai-assistant"
-import Link from "next/link"
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useProducts } from "@/hooks/use-products";
+import { useCart } from "@/hooks/use-cart";
+import { useAIAssistant } from "@/hooks/use-ai-assistant";
+import { useMobile } from "@/hooks/use-mobile";
+import Link from "next/link";
 
 export default function ProductPage() {
-  const params = useParams()
-  const productId = params?.id as string
-  const { products } = useProducts()
-  const { addItem } = useBag()
-  const { updateContextInfo, openAssistant } = useAIAssistant()
-  const [quantity, setQuantity] = useState(1)
-  const [isWishlisted, setIsWishlisted] = useState(false)
+  const params = useParams();
+  const productId = params?.id as string;
+  const { products } = useProducts();
+  const { addItem } = useCart();
+  const { updateContextInfo, openAssistant } = useAIAssistant();
+  const [quantity, setQuantity] = useState(1);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const isMobile = useMobile();
 
   // Find the product with the matching ID
-  const product = products.find((p) => p.id === productId)
+  const product = products.find((p) => p.id === productId);
 
   // Update AI context when product changes
   useEffect(() => {
@@ -42,9 +44,9 @@ export default function ProductPage() {
         page: "product",
         path: `/products/${productId}`,
         data: product,
-      })
+      });
     }
-  }, [product, productId, updateContextInfo])
+  }, [product, productId, updateContextInfo]);
 
   // Handle direct loading when product might not be immediately available
   if (!product) {
@@ -71,24 +73,27 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
-  const handleAddToBag = () => {
+  const handleAddToCart = () => {
     addItem({
       id: product.id,
       title: product.title,
       price: product.price,
       image: product.image,
       quantity,
-    })
-  }
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
         <div className="mb-6">
-          <Link href="/products" className="text-gray-600 hover:text-primary-navy flex items-center">
+          <Link
+            href="/products"
+            className="text-gray-600 hover:text-primary-navy flex items-center"
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Products
           </Link>
@@ -104,7 +109,12 @@ export default function ProductPage() {
               transition={{ duration: 0.5 }}
             >
               <div className="aspect-square relative">
-                <Image src={product.image || "/placeholder.svg"} alt={product.title} fill className="object-cover" />
+                <Image
+                  src={product.image || "/placeholder.svg"}
+                  alt={product.title}
+                  fill
+                  className="object-cover"
+                />
               </div>
             </motion.div>
           </div>
@@ -116,7 +126,9 @@ export default function ProductPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <h1 className="text-2xl md:text-3xl font-bold text-primary-navy mb-2">{product.title}</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-primary-navy mb-2">
+              {product.title}
+            </h1>
 
             <div className="flex items-center space-x-3 mb-4">
               <div className="flex items-center">
@@ -128,12 +140,15 @@ export default function ProductPage() {
                 ))}
               </div>
               <span className="text-sm text-gray-500">
-                {product.rating} ({Math.floor(Math.random() * 500) + 50} reviews)
+                {product.rating} ({Math.floor(Math.random() * 500) + 50}{" "}
+                reviews)
               </span>
             </div>
 
             <div className="flex items-baseline mb-6">
-              <span className="text-2xl md:text-3xl font-bold text-primary-navy">${product.price.toFixed(2)}</span>
+              <span className="text-2xl md:text-3xl font-bold text-primary-navy">
+                ${product.price.toFixed(2)}
+              </span>
 
               {product.originalPrice && (
                 <>
@@ -151,7 +166,9 @@ export default function ProductPage() {
 
             {/* Specs List */}
             <div className="bg-gray-50 rounded-lg p-4 mb-6">
-              <h3 className="font-medium text-primary-navy mb-2">Key Features</h3>
+              <h3 className="font-medium text-primary-navy mb-2">
+                Key Features
+              </h3>
               <ul className="space-y-2">
                 {product.specs?.map((spec, index) => (
                   <li key={index} className="flex items-start">
@@ -173,7 +190,10 @@ export default function ProductPage() {
                   -
                 </button>
                 <span className="px-4 py-1">{quantity}</span>
-                <button className="px-3 py-1 border-l border-gray-300" onClick={() => setQuantity(quantity + 1)}>
+                <button
+                  className="px-3 py-1 border-l border-gray-300"
+                  onClick={() => setQuantity(quantity + 1)}
+                >
                   +
                 </button>
               </div>
@@ -181,9 +201,12 @@ export default function ProductPage() {
 
             {/* Actions */}
             <div className="flex flex-wrap gap-3 mb-8">
-              <Button className="flex-1 bg-primary-navy hover:bg-primary-navy/90 py-6" onClick={handleAddToBag}>
-                <ShoppingBag className="h-5 w-5 mr-2" />
-                Add to Bag
+              <Button
+                className="flex-1 bg-primary-navy hover:bg-primary-navy/90 py-6"
+                onClick={handleAddToCart}
+              >
+                <ShoppingCart className="h-5 w-5 mr-2" />
+                Add to Cart
               </Button>
 
               <Button
@@ -192,16 +215,25 @@ export default function ProductPage() {
                 className="h-[52px] w-[52px]"
                 onClick={() => setIsWishlisted(!isWishlisted)}
               >
-                <Heart className={`h-5 w-5 ${isWishlisted ? "fill-red-500 text-red-500" : ""}`} />
+                <Heart
+                  className={`h-5 w-5 ${isWishlisted ? "fill-red-500 text-red-500" : ""}`}
+                />
               </Button>
 
-              <Button variant="outline" size="icon" className="h-[52px] w-[52px]">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-[52px] w-[52px]"
+              >
                 <Share2 className="h-5 w-5" />
               </Button>
             </div>
 
             {/* Ask AI Button */}
-            <Button className="w-full mb-6 bg-accent-sky hover:bg-accent-sky/90 py-6" onClick={openAssistant}>
+            <Button
+              className="w-full mb-6 bg-accent-sky hover:bg-accent-sky/90 py-6"
+              onClick={openAssistant}
+            >
               <MessageSquare className="h-5 w-5 mr-2" />
               Ask Baiyit About This Product
             </Button>
@@ -211,16 +243,24 @@ export default function ProductPage() {
               <div className="flex items-start">
                 <Truck className="h-5 w-5 text-accent-sky mr-3 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-primary-navy">Free Shipping</h4>
-                  <p className="text-sm text-gray-600">On orders over $50. Estimated delivery: 3-5 business days</p>
+                  <h4 className="font-medium text-primary-navy">
+                    Free Shipping
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    On orders over $50. Estimated delivery: 3-5 business days
+                  </p>
                 </div>
               </div>
 
               <div className="flex items-start">
                 <RotateCw className="h-5 w-5 text-accent-sky mr-3 mt-0.5" />
                 <div>
-                  <h4 className="font-medium text-primary-navy">30-Day Returns</h4>
-                  <p className="text-sm text-gray-600">Return or exchange within 30 days</p>
+                  <h4 className="font-medium text-primary-navy">
+                    30-Day Returns
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Return or exchange within 30 days
+                  </p>
                 </div>
               </div>
 
@@ -228,7 +268,9 @@ export default function ProductPage() {
                 <Shield className="h-5 w-5 text-accent-sky mr-3 mt-0.5" />
                 <div>
                   <h4 className="font-medium text-primary-navy">Warranty</h4>
-                  <p className="text-sm text-gray-600">1 year limited warranty</p>
+                  <p className="text-sm text-gray-600">
+                    1 year limited warranty
+                  </p>
                 </div>
               </div>
             </div>
@@ -247,27 +289,37 @@ export default function ProductPage() {
 
             <TabsContent value="description" className="mt-6">
               <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-medium text-primary-navy mb-4">Product Description</h3>
+                <h3 className="text-xl font-medium text-primary-navy mb-4">
+                  Product Description
+                </h3>
                 <p className="text-gray-700 mb-4">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in metus at justo malesuada consequat.
-                  Cras varius ipsum vel semper egestas. Proin ac egestas lorem, a tincidunt enim. Vivamus varius rhoncus
-                  ex, nec venenatis erat lacinia vel.
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Nullam in metus at justo malesuada consequat. Cras varius
+                  ipsum vel semper egestas. Proin ac egestas lorem, a tincidunt
+                  enim. Vivamus varius rhoncus ex, nec venenatis erat lacinia
+                  vel.
                 </p>
                 <p className="text-gray-700 mb-4">
-                  Phasellus ut ex at nulla iaculis rhoncus. Aliquam erat volutpat. Nulla facilisi. Sed in eros nec neque
-                  efficitur tincidunt. Nulla facilisi. Proin consequat, magna vel convallis convallis, nisi nulla
-                  fermentum enim, vel lacinia neque libero at lacus.
+                  Phasellus ut ex at nulla iaculis rhoncus. Aliquam erat
+                  volutpat. Nulla facilisi. Sed in eros nec neque efficitur
+                  tincidunt. Nulla facilisi. Proin consequat, magna vel
+                  convallis convallis, nisi nulla fermentum enim, vel lacinia
+                  neque libero at lacus.
                 </p>
                 <p className="text-gray-700">
-                  Fusce vel dolor eget tortor dignissim interdum. Praesent tempor auctor nisl, eu lobortis sem tempus
-                  eget. Integer ut odio risus. Integer pretium imperdiet nisl, vel mollis sem tempus eget.
+                  Fusce vel dolor eget tortor dignissim interdum. Praesent
+                  tempor auctor nisl, eu lobortis sem tempus eget. Integer ut
+                  odio risus. Integer pretium imperdiet nisl, vel mollis sem
+                  tempus eget.
                 </p>
               </div>
             </TabsContent>
 
             <TabsContent value="specifications" className="mt-6">
               <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-medium text-primary-navy mb-4">Technical Specifications</h3>
+                <h3 className="text-xl font-medium text-primary-navy mb-4">
+                  Technical Specifications
+                </h3>
                 <table className="w-full border-collapse">
                   <tbody>
                     {/* Dynamically generate based on product category */}
@@ -277,16 +329,20 @@ export default function ProductPage() {
                       { label: "Weight", value: "3.2 pounds" },
                       { label: "Warranty", value: "1 Year Limited Warranty" },
                       ...(product.specs?.map((spec) => {
-                        const parts = spec.split(":")
+                        const parts = spec.split(":");
                         return {
                           label: parts[0] || spec,
                           value: parts.length > 1 ? parts[1].trim() : "",
-                        }
+                        };
                       }) || []),
                     ].map((spec, i) => (
                       <tr key={i} className={i % 2 === 0 ? "bg-gray-50" : ""}>
-                        <td className="py-3 px-4 font-medium text-primary-navy">{spec.label}</td>
-                        <td className="py-3 px-4 text-gray-700">{spec.value || spec.label}</td>
+                        <td className="py-3 px-4 font-medium text-primary-navy">
+                          {spec.label}
+                        </td>
+                        <td className="py-3 px-4 text-gray-700">
+                          {spec.value || spec.label}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -296,20 +352,28 @@ export default function ProductPage() {
 
             <TabsContent value="reviews" className="mt-6">
               <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-medium text-primary-navy mb-4">Customer Reviews</h3>
-                <p className="text-gray-700">Reviews would be displayed here.</p>
+                <h3 className="text-xl font-medium text-primary-navy mb-4">
+                  Customer Reviews
+                </h3>
+                <p className="text-gray-700">
+                  Reviews would be displayed here.
+                </p>
               </div>
             </TabsContent>
 
             <TabsContent value="faq" className="mt-6">
               <div className="bg-white rounded-lg p-6 shadow-sm">
-                <h3 className="text-xl font-medium text-primary-navy mb-4">Frequently Asked Questions</h3>
-                <p className="text-gray-700">FAQ content would be displayed here.</p>
+                <h3 className="text-xl font-medium text-primary-navy mb-4">
+                  Frequently Asked Questions
+                </h3>
+                <p className="text-gray-700">
+                  FAQ content would be displayed here.
+                </p>
               </div>
             </TabsContent>
           </Tabs>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,48 +1,54 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
 
 export function CategoryGrid() {
   const categories = [
     {
       id: "electronics",
       name: "Electronics",
-      image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070",
+      image:
+        "https://images.unsplash.com/photo-1498049794561-7780e7231661?q=80&w=2070",
       count: 1243,
     },
     {
       id: "fashion",
       name: "Fashion",
-      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071",
+      image:
+        "https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=2071",
       count: 2458,
     },
     {
       id: "home",
       name: "Home & Kitchen",
-      image: "https://images.unsplash.com/photo-1556911220-bda9f7f6b548?q=80&w=2070",
+      image:
+        "https://images.unsplash.com/photo-1556911220-bda9f7f6b548?q=80&w=2070",
       count: 1876,
     },
     {
       id: "beauty",
       name: "Beauty & Personal Care",
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=2080",
+      image:
+        "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=2080",
       count: 932,
     },
     {
       id: "sports",
       name: "Sports & Fitness",
-      image: "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070",
+      image:
+        "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=2070",
       count: 754,
     },
     {
       id: "toys",
       name: "Toys & Games",
-      image: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?q=80&w=2070",
+      image:
+        "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?q=80&w=2070",
       count: 623,
     },
-  ]
+  ];
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -75,5 +81,5 @@ export function CategoryGrid() {
         </motion.div>
       ))}
     </div>
-  )
+  );
 }
